@@ -1,67 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VoxNexus AI</title>
 <style>
-  :root { --navy:#0b1f4d; --blue:#2563eb; --bg:#f1f5fb; --card:#fff; --text:#0f172a; --muted:#64748b; --green:#16a34a; --red:#dc2626; --amber:#d97706; }
+  :root { --navy:#0b1f4d; --navy2:#12306e; --blue:#2563eb; --bg:#eef2f9; --card:#fff; --text:#0f172a; --muted:#64748b; --line:#e2e8f0; --green:#16a34a; --red:#dc2626; --amber:#d97706; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
-  nav { background:var(--navy); color:#fff; display:flex; align-items:center; padding:12px 28px; gap:28px; position:sticky; top:0; z-index:5; }
-  .logo { font-weight:700; font-size:20px; margin-right:auto; }
+  body { margin:0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background:var(--bg); color:var(--text); }
+  nav { background:var(--navy); color:#fff; display:flex; align-items:center; padding:12px 28px; gap:26px; position:sticky; top:0; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+  .logo { font-weight:800; font-size:21px; margin-right:auto; letter-spacing:.3px; }
   .logo span { color:#60a5fa; }
-  nav a { color:#cbd5e1; cursor:pointer; padding:6px 2px; border-bottom:2px solid transparent; }
+  nav a { color:#cbd5e1; cursor:pointer; padding:6px 2px; border-bottom:2px solid transparent; font-size:15px; }
+  nav a:hover { color:#fff; }
   nav a.on { color:#fff; border-color:#60a5fa; }
   .pill { background:#1e3a8a; padding:6px 12px; border-radius:20px; font-size:13px; }
-  main { max-width:1000px; margin:0 auto; padding:24px 16px 60px; }
+  main { max-width:1120px; margin:0 auto; padding:24px 16px 70px; }
   .tab { display:none; } .tab.on { display:block; }
-  .hero { background:linear-gradient(135deg,#0b1f4d,#1d4ed8); color:#fff; border-radius:16px; padding:48px 40px; }
-  .hero h1 { font-size:46px; margin:0 0 10px; }
-  .hero p { font-size:18px; color:#dbeafe; max-width:520px; }
+  h2.page { margin:0 0 4px; font-size:26px; color:var(--navy); }
+  p.sub { margin:0 0 18px; color:var(--muted); }
+
+  /* hero + home */
+  .hero { background:linear-gradient(135deg,#0b1f4d,#1d4ed8); color:#fff; border-radius:18px; padding:54px 44px; }
+  .hero h1 { font-size:48px; margin:0 0 12px; }
+  .hero p { font-size:18px; color:#dbeafe; max-width:560px; }
   .grid { display:grid; gap:16px; }
   .g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
-  @media (max-width:760px){ .g2,.g3,.g4 { grid-template-columns:1fr; } .hero h1{font-size:32px;} }
-  .card { background:var(--card); border-radius:14px; padding:20px; box-shadow:0 1px 4px rgba(15,23,42,.08); }
-  .card h3 { margin:0 0 10px; font-size:16px; }
-  .step { display:inline-block; background:var(--blue); color:#fff; border-radius:50%; width:24px; height:24px; text-align:center; line-height:24px; font-size:13px; margin-right:6px; }
-  button { padding:10px 16px; border:0; border-radius:8px; background:var(--blue); color:#fff; font-size:14px; cursor:pointer; margin:4px 6px 4px 0; }
-  button:hover { opacity:.9; } button:disabled { opacity:.45; cursor:not-allowed; }
+  .flowstrip { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 4px; align-items:center; }
+  .flowstrip span.chip { background:#fff; border:1px solid var(--line); border-radius:20px; padding:8px 14px; font-size:14px; font-weight:600; color:var(--navy); }
+  .flowstrip .arrow { color:var(--muted); }
+
+  .card { background:var(--card); border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(15,23,42,.07), 0 6px 18px rgba(15,23,42,.04); }
+  .card h3 { margin:0 0 4px; font-size:17px; color:var(--navy); display:flex; align-items:center; gap:8px; }
+  .card .hint { color:var(--muted); font-size:13px; margin:0 0 12px; }
+  .step { display:inline-flex; background:var(--blue); color:#fff; border-radius:50%; width:26px; height:26px; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+
+  /* controls */
+  button { padding:10px 16px; border:0; border-radius:10px; background:var(--blue); color:#fff; font-size:14px; font-weight:600; cursor:pointer; margin:4px 6px 4px 0; transition:transform .05s, opacity .15s; }
+  button:hover { opacity:.92; } button:active { transform:scale(.98); } button:disabled { opacity:.4; cursor:not-allowed; }
   button.green { background:var(--green); } button.red { background:var(--red); } button.grey { background:#475569; }
-  button.big { padding:14px 26px; font-size:16px; background:#fff; color:var(--navy); font-weight:600; }
-  input, select { padding:9px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; }
+  button.xl { padding:16px 28px; font-size:17px; border-radius:12px; }
+  button.big { padding:14px 26px; font-size:16px; background:#fff; color:var(--navy); }
+  input, select, textarea { padding:10px; border:1px solid #cbd5e1; border-radius:10px; font-size:14px; font-family:inherit; background:#fff; }
+  input:focus, select:focus, textarea:focus { outline:2px solid #93c5fd; border-color:var(--blue); }
+  label.f { display:inline-flex; flex-direction:column; font-size:12px; color:var(--muted); margin:0 10px 8px 0; gap:4px; }
   small, .muted { color:var(--muted); font-size:12px; }
 
-  #banner { display:none; background:var(--red); color:#fff; border-radius:12px; padding:16px 20px; margin-bottom:16px; }
+  /* verify layout */
+  .vgrid { display:grid; grid-template-columns:320px 1fr; gap:18px; align-items:start; }
+  .side { position:sticky; top:74px; display:grid; gap:16px; }
+  .flow { display:grid; gap:16px; min-width:0; }
+  @media (max-width:900px){ .vgrid { grid-template-columns:1fr; } .side { position:static; } .g2,.g3,.g4 { grid-template-columns:1fr; } .hero h1{font-size:32px;} .hero{padding:34px 22px;} }
+
+  #banner { display:none; background:var(--red); color:#fff; border-radius:14px; padding:16px 20px; margin-bottom:16px; }
   #banner b { font-size:18px; display:block; margin-bottom:4px; }
 
-  .badge { display:inline-block; padding:6px 16px; border-radius:20px; color:#fff; font-weight:700; background:#64748b; }
-  .badge.VERIFIED { background:var(--green); } .badge.SUSPENDED { background:var(--red); } .badge.UNVERIFIED { background:var(--amber); }
+  .badge { display:inline-block; padding:6px 18px; border-radius:20px; color:#fff; font-weight:700; background:#64748b; letter-spacing:.5px; font-size:13px; }
+  .badge.VERIFIED { background:var(--green); } .badge.SUSPENDED { background:var(--red); } .badge.UNVERIFIED, .badge.UNCERTAIN { background:var(--amber); }
   .gauge { text-align:center; }
   .gbadge { margin-bottom:10px; }
-  .gwrap { position:relative; width:230px; margin:0 auto; }
-  .gwrap svg { width:230px; display:block; }
-  .gwrap .num { position:absolute; left:0; right:0; bottom:2px; font-size:40px; font-weight:700; line-height:1; }
-  .gauge .lbl { color:var(--muted); font-size:13px; margin-top:8px; }
+  .gwrap { position:relative; width:240px; margin:0 auto; }
+  .gwrap svg { width:240px; display:block; }
+  .gwrap .num { position:absolute; left:0; right:0; bottom:0; font-size:46px; font-weight:800; line-height:1; color:var(--navy); }
+  .gauge .lbl { color:var(--muted); font-size:12px; margin-top:8px; }
   #fillArc { transition: stroke-dashoffset .6s, stroke .6s; }
+  .need { font-size:12px; color:var(--muted); margin-top:4px; }
 
-  .result { border-left:6px solid #94a3b8; background:#f8fafc; padding:14px; border-radius:8px; margin-top:12px; }
-  .result.ALLOW { border-color:var(--green); } .result.BLOCK { border-color:var(--red); background:#fef2f2; } .result.STEP_UP { border-color:var(--amber); }
+  ul.check { list-style:none; padding:0; margin:8px 0 0; }
+  ul.check li { display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid #eef2f7; font-size:14px; color:var(--muted); }
+  ul.check li:last-child { border-bottom:0; }
+  ul.check li i { width:22px; height:22px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:12px; color:#fff; flex:none; }
+  ul.check li.ok { color:var(--text); } ul.check li.ok i { background:var(--green); }
+  ul.check li.bad { color:var(--red); } ul.check li.bad i { background:var(--red); }
+
+  .callrow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  #liveState { display:none; color:var(--red); font-weight:800; letter-spacing:1px; font-size:13px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--red); margin-right:6px; animation:blink 1s infinite; }
+  @keyframes blink { 50% { opacity:.2; } }
+  .risk { margin-top:12px; padding:12px 14px; border-radius:10px; background:#f8fafc; border:1px solid var(--line); font-weight:600; min-height:44px; }
+  .tbox { margin-top:10px; padding:12px 14px; border-radius:10px; background:#0f172a; color:#e2e8f0; font-size:14px; min-height:60px; max-height:140px; overflow:auto; line-height:1.5; }
+  .tbox .cap { display:block; color:#94a3b8; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  #slog { margin-top:10px; max-height:150px; overflow:auto; background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:8px 12px; }
+  #slog div, #recStatus { font-size:13px; margin-top:3px; }
+  #slog:empty { display:none; }
+
+  .result { border-left:6px solid #94a3b8; background:#f8fafc; padding:14px; border-radius:10px; margin-top:12px; }
+  .result.ALLOW { border-color:var(--green); } .result.BLOCK { border-color:var(--red); background:#fef2f2; } .result.STEP_UP { border-color:var(--amber); background:#fffbeb; }
   .result h4 { margin:0 0 4px; font-size:18px; }
   .scorebar { position:relative; height:12px; background:linear-gradient(90deg,#22c55e,#facc15,#ef4444); border-radius:6px; margin:14px 0 4px; }
   .marker { position:absolute; top:-5px; width:4px; height:22px; background:#0f172a; border-radius:2px; }
   .thr { position:absolute; top:-3px; width:2px; height:18px; background:#0f172a; opacity:.35; left:62%; }
+  #msg { margin-top:12px; font-weight:600; }
+  #chPhrase { font-size:24px; font-weight:800; margin:8px 0; color:var(--navy); }
+
+  details.tools { background:var(--card); border-radius:16px; padding:6px 20px; box-shadow:0 1px 3px rgba(15,23,42,.07); }
+  details.tools > summary { cursor:pointer; padding:14px 0; font-weight:700; color:var(--navy); }
+  details.tools .inner { padding-bottom:16px; }
+  details.tools hr { border:0; border-top:1px solid var(--line); margin:16px 0; }
+
   table { width:100%; border-collapse:collapse; font-size:13px; }
-  th, td { text-align:left; padding:8px; border-bottom:1px solid #e2e8f0; vertical-align:top; }
+  th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
   th { color:var(--muted); font-weight:600; }
-  .stat { text-align:center; } .stat b { display:block; font-size:34px; color:var(--navy); }
-  .rec { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--red); margin-right:6px; animation:blink 1s infinite; }
-  @keyframes blink { 50% { opacity:.2; } }
-  #slog div, #recStatus { font-size:13px; margin-top:4px; }
+  .stat { text-align:center; } .stat b { display:block; font-size:36px; color:var(--navy); }
+  .who { border-top:4px solid var(--blue); }
 </style>
 </head>
 <body>
-
 <nav>
   <div class="logo">Vox<span>Nexus</span> AI</div>
   <a id="t-home" class="on" onclick="show('home')">Home</a>
@@ -70,138 +114,204 @@
   <a id="t-dash" onclick="show('dash')">Dashboard</a>
   <span class="pill" id="navSession">No session</span>
 </nav>
-
 <main>
 
-<!-- HOME -->
+<!-- ================= HOME ================= -->
 <section id="home" class="tab on">
   <div class="hero">
     <h1>Speak. Verify. Trust.</h1>
-    <p>A trust layer for voice. We check that a voice is real and that it is the right person, before anything sensitive is allowed.</p>
+    <p>A trust layer for voice calls. While a customer talks, we check that the voice is real, that it is the right person, and whether the call sounds like a scam, before anything sensitive is allowed.</p>
     <button class="big" onclick="show('verify')">Start verification &rarr;</button>
   </div>
-  <div class="grid g3" style="margin-top:16px">
-    <div class="card"><h3>1. Locked by default</h3><p class="muted">Every session starts UNVERIFIED with trust 0. Nothing sensitive is allowed.</p></div>
-    <div class="card"><h3>2. Real and right person</h3><p class="muted">Aletheia checks the voice is not AI-generated. Eidos checks it matches the registered person.</p></div>
-    <div class="card"><h3>3. Cut off instantly</h3><p class="muted">If a synthetic voice appears mid-session, the session is suspended and every decision is logged.</p></div>
+  <div class="flowstrip">
+    <span class="chip">Locked session</span><span class="arrow">&rarr;</span>
+    <span class="chip">Live call check</span><span class="arrow">&rarr;</span>
+    <span class="chip">One trust score</span><span class="arrow">&rarr;</span>
+    <span class="chip">Challenge sentence if trust drops</span><span class="arrow">&rarr;</span>
+    <span class="chip">One-time transfer approval</span>
   </div>
-  <p class="muted" style="margin-top:14px">Hackathon prototype tested on a few clips. A score is evidence, not proof.</p>
+  <div class="grid g3" style="margin-top:12px">
+    <div class="card"><h3>1. Locked by default</h3><p class="hint">Every session starts unverified with trust 0. Nothing sensitive is allowed.</p></div>
+    <div class="card"><h3>2. Real voice, right person</h3><p class="hint">Aletheia checks the voice is not AI-generated. Eidos checks it matches the registered person.</p></div>
+    <div class="card"><h3>3. Listens to the call too</h3><p class="hint">Call Guard reads what is said. Pressure, urgency and requests for an OTP lower the same trust score.</p></div>
+  </div>
+  <h3 style="margin:26px 0 10px;color:var(--navy)">Who it helps</h3>
+  <div class="grid g3">
+    <div class="card who"><h3>Bank customers</h3><p class="hint">Especially older people targeted by voice-clone and scam calls.</p></div>
+    <div class="card who"><h3>Call-centre staff</h3><p class="hint">A quick, clear check before they act on a spoken request.</p></div>
+    <div class="card who"><h3>Fraud and compliance teams</h3><p class="hint">A log of every check and the reason for every block.</p></div>
+  </div>
+  <p class="muted" style="margin-top:16px">Prototype tested on a few clips, not yet with real bank staff or customers. A score is evidence, not proof.</p>
 </section>
 
-<!-- VERIFY -->
+<!-- ================= VERIFY ================= -->
 <section id="verify" class="tab">
+  <h2 class="page">Protected call</h2>
+  <p class="sub">One call, one trust score. Start a session, talk, and watch trust move.</p>
 
   <div id="banner">
     <b>SESSION SUSPENDED</b>
     <span id="bannerText"></span>
   </div>
 
-  <div class="grid g2">
-    <div class="card">
-      <h3><span class="step">1</span>Start a session</h3>
-      Speaker ID <input id="spk" value="teamate1" style="width:130px">
-      Role <select id="role"><option>customer</option><option>teller</option><option>viewer</option></select><br>
-      <button onclick="startSession()">Start session</button>
-      <div class="muted">Session: <b id="sid">none</b></div>
-    </div>
-    <div class="card gauge">
-      <div class="gbadge"><span class="badge" id="badge">NO SESSION</span></div>
-      <div class="gwrap">
-        <svg viewBox="0 0 200 110">
-          <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#e2e8f0" stroke-width="16" stroke-linecap="round"/>
-          <path id="fillArc" d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#16a34a" stroke-width="16" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
-        </svg>
-        <div class="num" id="trust">0</div>
+  <div class="vgrid">
+    <!-- left: always visible -->
+    <aside class="side">
+      <div class="card gauge">
+        <div class="gbadge"><span class="badge" id="badge">NO SESSION</span></div>
+        <div class="gwrap">
+          <svg viewBox="0 0 200 110">
+            <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#e2e8f0" stroke-width="16" stroke-linecap="round"/>
+            <path id="fillArc" d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#16a34a" stroke-width="16" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
+          </svg>
+          <div class="num" id="trust">0</div>
+        </div>
+        <div class="lbl">Trust score (rule-based, 0 to 100)</div>
+        <div class="need">Transfers need 90 or more</div>
       </div>
-      <div class="lbl">Trust score (rule-based, 0 to 100)</div>
-    </div>
-  </div>
+      <div class="card">
+        <h3>Ready for a transfer?</h3>
+        <ul class="check">
+          <li id="ck1"><i></i>Session started</li>
+          <li id="ck2"><i></i>Real voice and right person</li>
+          <li id="ck3"><i></i>Call Guard listened to the call</li>
+          <li id="ck4"><i></i>No scam pressure heard</li>
+          <li id="ck5"><i></i>Trust is 90 or more</li>
+        </ul>
+      </div>
+    </aside>
 
-  <div class="card" style="margin-top:16px">
-    <h3><span class="step">2</span>Give a voice sample</h3>
-    <button class="grey" id="recBtn" onclick="toggleRec()">&#127908; Record from microphone</button>
-    or upload a .wav: <input type="file" id="file" accept=".wav" onchange="recorded=null; $('recStatus').textContent='';">
-    <div id="recStatus" class="muted"></div>
-    <div style="margin-top:8px">
-      <button class="green" id="fullBtn" onclick="check('full')">Full check: real + identity <small style="color:#dcfce7">~523 credits</small></button>
-      <button id="monBtn" onclick="check('monitor')">Monitor check: fake only <small style="color:#dbeafe">~23 credits</small></button>
-    </div>
-    <div id="result"></div>
-  </div>
+    <!-- right: the flow -->
+    <div class="flow">
+      <div class="card">
+        <h3><span class="step">1</span>Start a session</h3>
+        <p class="hint">The speaker ID must be a voice that was enrolled earlier.</p>
+        <label class="f">Speaker ID <input id="spk" value="teamate1" style="width:150px"></label>
+        <label class="f">Role
+          <select id="role"><option>customer</option><option>teller</option><option>viewer</option></select>
+        </label>
+        <button onclick="startSession()">Start session</button>
+        <span class="muted">Session: <b id="sid">none</b></span>
+      </div>
 
-  <div class="grid g2" style="margin-top:16px">
-    <div class="card">
-      <h3><span class="step">3</span>Protected action</h3>
-      Amount <input id="amt" type="number" value="5000" style="width:100px">
-      <button class="red" onclick="transfer()">Transfer money</button>
-      <div id="msg" style="margin-top:10px; font-weight:600"></div>
-    </div>
-    <div class="card">
-      <h3>Sentinel: continuous monitoring</h3>
-      <small>Keeps checking the voice after verification. Fake-voice check only (~23 credits per 5 s chunk). Stops when the session is suspended.</small><br>
-      <button class="green" id="liveBtn" onclick="liveSentinel()">&#127908; Start LIVE sentinel (microphone)</button>
-      <button class="red" onclick="stopFlag=true">Stop</button>
-      <div style="margin-top:8px"><small>Or send saved clips in name order:</small><br>
-      <input type="file" id="sfiles" accept=".wav" multiple>
-      <button id="sentBtn" onclick="sentinel()">Start file sentinel</button></div>
-      <div id="slog"></div>
-    </div>
-  </div>
+      <div class="card">
+        <h3><span class="step">2</span>Live call</h3>
+        <p class="hint">Talk normally for about 15 seconds. We check the voice, then keep listening and reading what is said. Silence is skipped and costs nothing.</p>
+        <div class="callrow">
+          <button class="green xl" id="callBtn" onclick="liveCall()">&#127908; Start live call</button>
+          <button class="red" onclick="stopFlag=true; cgStop(); setLive(false)">Stop</button>
+          <span id="liveState"><span class="dot"></span>LIVE</span>
+        </div>
+        <div id="cgRisk" class="risk">Call Guard is waiting for a call.</div>
+        <div id="cgFlags" class="muted" style="margin-top:8px"></div>
+        <div class="tbox"><span class="cap">Live transcript</span><span id="cgTranscript"></span></div>
+        <div id="slog"></div>
+      </div>
 
-  <div class="card" style="margin-top:16px">
-    <h3>Spliced-call timeline <small>(~23 credits per analysis)</small></h3>
-    <small>Real voice with a fake sentence inserted in the middle. Aletheia scores each 4 s window, so we can see where the fake sits.</small>
-    <div style="margin-top:8px">
-      Real clip <input type="file" id="tlReal" accept=".wav" onchange="tlRealRec=null">
-      Fake clip <input type="file" id="tlFake" accept=".wav">
+      <div class="card">
+        <h3><span class="step">3</span>Transfer money</h3>
+        <p class="hint">Each approval is for one amount and one recipient, expires in 2 minutes and works once. If trust is below 90 you must say a random sentence first.</p>
+        <label class="f">Amount <input id="amt" type="number" value="5000" style="width:120px"></label>
+        <label class="f">Recipient <input id="rcp" value="Ravi" style="width:150px"></label>
+        <button class="red" onclick="prepareTransfer()">Prepare transfer</button>
+        <div id="txnBox" class="result STEP_UP" style="display:none">
+          <h4 id="txnTitle"></h4>
+          <div id="chBox" style="display:none">
+            Say this sentence:
+            <div id="chPhrase"></div>
+            <button class="green" id="chBtn" onclick="speakChallenge()">&#127908; Speak the sentence <small style="color:#dcfce7">~523 credits</small></button>
+            <button class="grey" onclick="newSentence()">New sentence</button>
+            <div id="chStatus" class="muted"></div>
+          </div>
+          <button class="grey" id="apBtn" style="display:none" onclick="adminApprove()">Approve as bank admin</button>
+          <button class="red" id="cfBtn" onclick="confirmTransfer()">Confirm transfer</button>
+        </div>
+        <div id="msg"></div>
+      </div>
+
+      <details class="tools">
+        <summary>Tools and tests (manual checks, sentinel, spliced-call timeline)</summary>
+        <div class="inner">
+          <h3 style="font-size:15px">Manual voice sample</h3>
+          <button class="grey" id="recBtn" onclick="toggleRec()">&#127908; Record from microphone</button>
+          or upload a .wav: <input type="file" id="file" accept=".wav" onchange="recorded=null; $('recStatus').textContent='';">
+          <div id="recStatus" class="muted"></div>
+          <a id="dlRec" style="display:none" href="#">Download this recording</a>
+          <div style="margin-top:8px">
+            <button class="green" id="fullBtn" onclick="check('full')">Full check: real + identity <small style="color:#dcfce7">~523 credits</small></button>
+            <button id="monBtn" onclick="check('monitor')">Monitor check: fake only <small style="color:#dbeafe">~23 credits</small></button>
+          </div>
+          <div id="result"></div>
+          <hr>
+          <h3 style="font-size:15px">Type what the caller said</h3>
+          <textarea id="cgType" rows="2" style="width:100%" placeholder="Type what the caller said"></textarea>
+          <button class="green" onclick="cgSend($('cgType').value)">Analyze text</button>
+          <button class="grey" onclick="enrollMic()">&#127908; Enroll my voice (25 s) as the Speaker ID above</button>
+          <hr>
+          <h3 style="font-size:15px">Sentinel</h3>
+          <button class="green" id="liveBtn" onclick="liveSentinel()">&#127908; Voice-only sentinel</button>
+          <input type="file" id="sfiles" accept=".wav" multiple>
+          <button id="sentBtn" onclick="sentinel()">File sentinel</button>
+          <hr>
+          <h3 style="font-size:15px">Spliced-call timeline <small>(~23 credits per analysis)</small></h3>
+          <small>Real voice with a fake sentence inserted in the middle. Aletheia scores each 4 s window, so we can see where the fake sits.</small>
+          <div style="margin-top:8px">
+            Real clip <input type="file" id="tlReal" accept=".wav" onchange="tlRealRec=null">
+            Fake clip <input type="file" id="tlFake" accept=".wav">
+          </div>
+          <button class="grey" onclick="buildSpliced()">1. Build spliced clip (real + fake + real)</button>
+          <div style="margin-top:6px">
+            Or analyse any .wav: <input type="file" id="tlFile" accept=".wav" onchange="tlCallRec=null">
+          </div>
+          <button class="green" onclick="analyzeTimeline()">2. Analyze timeline</button>
+          <div style="margin-top:8px">
+            <button class="grey" id="tlRecReal" onclick="recordTl('real', 'tlRecReal')">&#127908; Record real voice (for splicing)</button>
+            <button class="grey" id="tlRecCall" onclick="recordTl('call', 'tlRecCall')">&#127908; Record a call to analyze</button>
+            <button class="red" id="tlStopBtn" style="display:none" onclick="stopTl()">&#9632; Stop</button>
+            <small>Use Stop to finish recording (max 30 s, min 6 s).</small>
+          </div>
+          <div id="tlStatus" class="muted" style="margin-top:6px"></div>
+          <div id="tlOut"></div>
+        </div>
+      </details>
     </div>
-    <button class="grey" onclick="buildSpliced()">1. Build spliced clip (real + fake + real)</button>
-    <div style="margin-top:6px">
-      Or analyse any .wav: <input type="file" id="tlFile" accept=".wav" onchange="tlCallRec=null">
-    </div>
-    <button class="green" onclick="analyzeTimeline()">2. Analyze timeline</button>
-        <div style="margin-top:8px">
-      <button class="grey" id="tlRecReal" onclick="recordTl('real', 'tlRecReal')">&#127908; Record real voice (for splicing)</button>
-      <button class="grey" id="tlRecCall" onclick="recordTl('call', 'tlRecCall')">&#127908; Record a call to analyze</button>
-      <button class="red" id="tlStopBtn" style="display:none" onclick="stopTl()">&#9632; Stop</button>
-      <small>Use Stop to finish recording (max 30 s, min 6 s).</small>
-    </div>
-    <div id="tlStatus" class="muted" style="margin-top:6px"></div>
-    <div id="tlOut"></div>
   </div>
 </section>
 
-<!-- HISTORY -->
+<!-- ================= HISTORY ================= -->
 <section id="history" class="tab">
+  <h2 class="page">Audit history</h2>
+  <p class="sub">Every decision, with the reason.</p>
   <div class="card">
-    <h3>Audit history</h3>
     <button onclick="loadHistory(true)">This session</button>
     <button class="grey" onclick="loadHistory(false)">All sessions (latest 50)</button>
     <table id="audit" style="margin-top:10px"></table>
   </div>
 </section>
 
-<!-- DASHBOARD -->
+<!-- ================= DASHBOARD ================= -->
 <section id="dash" class="tab">
+  <h2 class="page">Security overview</h2>
+  <p class="sub">Counted from every entry in the audit log, including earlier test runs.</p>
   <div class="grid g4">
-    <div class="card stat"><b id="s1">0</b><span class="muted">Sessions</span></div>
-    <div class="card stat"><b id="s2">0</b><span class="muted">Voice checks</span></div>
-    <div class="card stat"><b id="s3" style="color:#dc2626">0</b><span class="muted">Fake voices caught</span></div>
+    <div class="card stat"><b id="s1">0</b><span class="muted">Sessions started</span></div>
+    <div class="card stat"><b id="s2">0</b><span class="muted">Voice checks run</span></div>
+    <div class="card stat"><b id="s3" style="color:#dc2626">0</b><span class="muted">Sessions suspended</span></div>
     <div class="card stat"><b id="s4" style="color:#d97706">0</b><span class="muted">Actions blocked</span></div>
   </div>
+  <button onclick="loadDash()" style="margin-top:12px">Refresh</button>
   <div class="card" style="margin-top:16px">
-    <h3>About these numbers</h3>
-    <p class="muted">Counted from the latest audit log entries. This is a local prototype log, not a production analytics system.</p>
-    <button onclick="loadDash()">Refresh</button>
+    <h3>Latest events</h3>
+    <table id="dashTable"></table>
   </div>
 </section>
-
 </main>
 
 <script>
 let sid = null, recorded = null, stopFlag = false, liveOn = false, lastScore = null, prevStatus = null;
 const $ = id => document.getElementById(id);
-const ACTION_BUTTONS = ["fullBtn", "monBtn", "sentBtn", "liveBtn"];
+const ACTION_BUTTONS = ["fullBtn", "monBtn", "sentBtn", "liveBtn", "callBtn"];
+window.cgChecked = false;
 
 function show(name) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
@@ -211,13 +321,26 @@ function show(name) {
   if (name === "history") loadHistory(true);
   if (name === "dash") loadDash();
 }
-
 function say(text, ok) {
   $("msg").textContent = text;
   $("msg").style.color = ok === true ? "#16a34a" : ok === false ? "#dc2626" : "#0f172a";
 }
-
 function setButtons(disabled) { ACTION_BUTTONS.forEach(id => $(id).disabled = disabled); }
+function setLive(on) { $("liveState").style.display = on ? "inline" : "none"; }
+
+function ckSet(id, state) {
+  const li = $(id);
+  li.className = state;
+  li.firstChild.textContent = state === "ok" ? "\u2713" : state === "bad" ? "\u2715" : "";
+}
+function updateChecklist(s, trust) {
+  const cap = s && s.pressure_cap !== undefined ? s.pressure_cap : 100;
+  ckSet("ck1", s ? "ok" : "");
+  ckSet("ck2", !s ? "" : s.status === "VERIFIED" ? "ok" : s.status === "SUSPENDED" ? "bad" : "");
+  ckSet("ck3", s && window.cgChecked ? "ok" : "");
+  ckSet("ck4", !s ? "" : cap < 90 ? "bad" : window.cgChecked ? "ok" : "");
+  ckSet("ck5", !s ? "" : trust >= 90 ? "ok" : s.status === "SUSPENDED" ? "bad" : "");
+}
 
 async function startSession() {
   const fd = new FormData();
@@ -226,30 +349,31 @@ async function startSession() {
   const r = await fetch("/session/start", { method: "POST", body: fd });
   const s = await r.json();
   sid = s.session_id;
-  stopFlag = true;            // stop any sentinel still running on an old session
+  stopFlag = true;
   lastScore = null; prevStatus = null;
+  window.cgLevel = null; window.cgChecked = false;
+  cgFinal = ""; $("cgRisk").textContent = "Call Guard is waiting for a call."; $("cgFlags").textContent = ""; $("cgTranscript").textContent = "";
   $("sid").textContent = sid;
-  $("navSession").textContent = "Session " + sid;
+  $("navSession").textContent = "Session " + sid + " (" + s.speaker_id + ")";
   $("result").innerHTML = ""; $("result").dataset.state = "";
   $("slog").textContent = "";
+  hideTxn();
+  setLive(false);
   $("banner").style.display = "none";
   setButtons(false);
   say("Session started. Locked until a real, matching voice is verified.");
   await refresh();
 }
-
 async function refresh() {
   if (!sid) return;
   const s = await (await fetch("/session/" + sid)).json();
   const trust = s.effective_trust ?? s.trust_score ?? 0;
   const suspended = s.status === "SUSPENDED";
-
   $("badge").textContent = s.status;
   $("badge").className = "badge " + s.status;
   $("trust").textContent = trust;
   $("fillArc").style.strokeDashoffset = 283 * (1 - trust / 100);
   $("fillArc").style.stroke = suspended ? "#dc2626" : trust >= 90 ? "#16a34a" : "#d97706";
-
   if (suspended) {
     const ev = (s.events || []).slice(-1)[0];
     const why = ev ? ev.detail : "Security check failed";
@@ -262,8 +386,8 @@ async function refresh() {
     $("banner").style.display = "none";
   }
   prevStatus = s.status;
+  updateChecklist(s, trust);
 }
-
 function renderSuspended(why) {
   const d = document.createElement("div");
   d.className = "result BLOCK";
@@ -285,7 +409,6 @@ function renderSuspended(why) {
 
 /* ---------- microphone -> WAV ---------- */
 let mr = null, chunks = [], recStart = 0, timer = null;
-
 async function toggleRec() {
   if (mr && mr.state === "recording") { mr.stop(); return; }
   try {
@@ -302,6 +425,7 @@ async function toggleRec() {
       $("recStatus").textContent = "Converting...";
       const wav = await blobToWav(new Blob(chunks));
       recorded = new File([wav], "recording.wav", { type: "audio/wav" });
+      const dl = $("dlRec"); dl.href = URL.createObjectURL(recorded); dl.download = "teamate2.wav"; dl.style.display = "inline";
       $("file").value = "";
       $("recStatus").textContent = "Recorded " + secs.toFixed(1) + "s and ready to check.";
     };
@@ -309,13 +433,12 @@ async function toggleRec() {
     recStart = Date.now();
     $("recBtn").innerHTML = "&#9632; Stop recording";
     timer = setInterval(() => {
-      $("recStatus").innerHTML = '<span class="rec"></span>Recording ' + ((Date.now() - recStart) / 1000).toFixed(0) + "s (speak for 5 to 10 seconds)";
+      $("recStatus").innerHTML = '<span class="dot"></span>Recording ' + ((Date.now() - recStart) / 1000).toFixed(0) + "s (speak for 5 to 10 seconds)";
     }, 300);
   } catch (e) {
     $("recStatus").textContent = "Microphone not available: " + e.message + ". Upload a .wav instead.";
   }
 }
-
 async function blobToWav(blob) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const buf = await ctx.decodeAudioData(await blob.arrayBuffer());
@@ -334,11 +457,10 @@ async function blobToWav(blob) {
 
 /* ---------- manual checks ---------- */
 function getClip() { return recorded || $("file").files[0]; }
-
 async function check(mode) {
   if (!sid) return alert("Start a session first (step 1).");
   const clip = getClip();
-  if (!clip) return alert("Record or choose a .wav file first (step 2).");
+  if (!clip) return alert("Record or choose a .wav file first.");
   setButtons(true);
   $("result").dataset.state = "";
   $("result").innerHTML = '<p class="muted">Checking with DetectifAI... this can take a few seconds.</p>';
@@ -353,19 +475,17 @@ async function check(mode) {
     else { lastScore = j.aletheia_score; renderResult(j, mode); }
   } catch (e) { renderError(String(e)); }
   setButtons(false);
-  await refresh();   // re-disables the buttons if the session is now suspended
+  await refresh();
 }
-
 function renderError(text) {
   $("result").innerHTML = "";
   $("result").dataset.state = "ERROR";
   const d = document.createElement("div");
   d.className = "result BLOCK";
   d.innerHTML = "<h4>Refused</h4>";
-  const p = document.createElement("div"); p.textContent = text; d.appendChild(p);
+  const p = document.createElement("div"); p.textContent = typeof text === "string" ? text : JSON.stringify(text); d.appendChild(p);
   $("result").appendChild(d);
 }
-
 function renderResult(j, mode) {
   const score = Number(j.aletheia_score);
   const pct = Math.max(0, Math.min(100, score * 100));
@@ -382,17 +502,6 @@ function renderResult(j, mode) {
   $("result").innerHTML = "";
   $("result").appendChild(d);
   $("result").dataset.state = j.status;
-}
-
-async function transfer() {
-  if (!sid) return say("Start a session first.", false);
-  const fd = new FormData();
-  fd.append("sid", sid);
-  fd.append("amount", $("amt").value);
-  const r = await fetch("/bank/transfer", { method: "POST", body: fd });
-  const j = await r.json();
-  if (r.ok) say("ALLOWED: " + j.status + " (" + j.amount + ")", true);
-  else say("BLOCKED (" + r.status + "): " + j.detail, false);
 }
 
 /* ---------- sentinel (files) ---------- */
@@ -418,7 +527,7 @@ async function sentinel() {
   }
 }
 
-/* ---------- sentinel (live microphone) ---------- */
+/* ---------- audio helpers ---------- */
 function recordChunk(stream, ms) {
   return new Promise(resolve => {
     const parts = [];
@@ -429,6 +538,23 @@ function recordChunk(stream, ms) {
     setTimeout(() => { if (rec.state === "recording") rec.stop(); }, ms);
   });
 }
+const VAD_RMS = 0.02, VAD_MIN_ACTIVE = 0.25;
+async function speechLevel(wavBlob) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const buf = await ctx.decodeAudioData(await wavBlob.arrayBuffer());
+  ctx.close();
+  const d = buf.getChannelData(0), frame = Math.floor(buf.sampleRate * 0.05);
+  let active = 0, total = 0, peak = 0;
+  for (let i = 0; i + frame <= d.length; i += frame) {
+    let sum = 0;
+    for (let k = i; k < i + frame; k++) { sum += d[k] * d[k]; if (Math.abs(d[k]) > peak) peak = Math.abs(d[k]); }
+    if (Math.sqrt(sum / frame) > VAD_RMS) active++;
+    total++;
+  }
+  const frac = total ? active / total : 0;
+  return { speech: frac >= VAD_MIN_ACTIVE, active: frac, peak };
+}
+function wordCount(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
 
 async function liveSentinel() {
   if (!sid) return alert("Start a session first.");
@@ -438,7 +564,7 @@ async function liveSentinel() {
   catch (e) { return logS("Microphone not available: " + e.message); }
   const mySid = sid;
   liveOn = true; stopFlag = false; $("slog").textContent = "";
-  const MAX = 6, SECS = 5;   // 6 chunks of 5 s = about 138 credits at most
+  const MAX = 6, SECS = 5;
   logS("LIVE sentinel listening in " + SECS + "s chunks (max " + MAX + "). Press Stop to end.");
   for (let i = 1; i <= MAX && !stopFlag && mySid === sid; i++) {
     logS("Chunk " + i + ": listening...");
@@ -460,11 +586,11 @@ async function liveSentinel() {
   liveOn = false;
   logS("Live sentinel ended.");
 }
-
 function logS(t) {
   const d = document.createElement("div");
   d.textContent = new Date().toLocaleTimeString() + "  " + t;
   $("slog").appendChild(d);
+  $("slog").scrollTop = $("slog").scrollHeight;
 }
 
 /* ---------- history + dashboard ---------- */
@@ -477,23 +603,35 @@ async function loadHistory(thisSession) {
   ["Time", "Session", "Event", "Detail"].forEach(h => { const c = document.createElement("th"); c.textContent = h; head.appendChild(c); });
   rows.slice().reverse().forEach(e => {
     const row = t.insertRow();
-    const detail = e.event === "firewall"
-      ? e.action + " -> " + e.decision + " (" + e.reason + ")"
-      : e.mode + " check -> " + e.status + ", trust " + e.trust + ", AI score " + e.aletheia_score;
+    let detail;
+    if (e.event === "firewall") detail = e.action + " -> " + e.decision + " (" + e.reason + ")";
+    else if (e.event === "check") detail = e.mode + " check -> " + e.status + ", trust " + e.trust + ", AI score " + e.aletheia_score;
+    else { const { time, sid: _s, event, ...rest } = e; detail = JSON.stringify(rest); }
     [e.time, e.sid, e.event, detail].forEach(v => row.insertCell().textContent = v);
   });
 }
-
 async function loadDash() {
   const rows = await (await fetch("/audit")).json();
-  $("s1").textContent = new Set(rows.map(r => r.sid)).size;
-  $("s2").textContent = rows.filter(r => r.event === "check").length;
-  $("s3").textContent = rows.filter(r => r.event === "check" && r.status === "SUSPENDED").length;
-  $("s4").textContent = rows.filter(r => r.event === "firewall" && r.decision === "BLOCK").length;
+  const checks = rows.filter(r => r.event === "check");
+  const blocked = rows.filter(r => r.event === "firewall" && r.decision === "BLOCK");
+  $("s1").textContent = new Set(rows.map(r => r.sid).filter(Boolean)).size;
+  $("s2").textContent = checks.length;
+  $("s3").textContent = new Set(checks.filter(r => r.status === "SUSPENDED").map(r => r.sid)).size;
+  $("s4").textContent = blocked.length;
+  const t = $("dashTable");
+  t.textContent = "";
+  const head = t.insertRow();
+  ["Time", "Session", "Event", "Result"].forEach(h => { const c = document.createElement("th"); c.textContent = h; head.appendChild(c); });
+  rows.slice(-8).reverse().forEach(e => {
+    const row = t.insertRow();
+    const result = e.event === "firewall" ? e.action + " -> " + e.decision
+      : e.event === "check" ? e.status + ", trust " + e.trust : "";
+    [e.time, e.sid, e.event, result].forEach(v => row.insertCell().textContent = v);
+  });
 }
+
 /* ---------- spliced-call timeline ---------- */
 let splicedFile = null, splicedMeta = null;
-
 async function decode16k(file) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
   const buf = await ctx.decodeAudioData(await file.arrayBuffer());
@@ -502,7 +640,6 @@ async function decode16k(file) {
   ctx.close();
   return mono;
 }
-
 function floatsToWav(data, rate) {
   const n = data.length, out = new DataView(new ArrayBuffer(44 + n * 2));
   const str = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
@@ -513,7 +650,25 @@ function floatsToWav(data, rate) {
   for (let i = 0; i < n; i++) { const v = Math.max(-1, Math.min(1, data[i])); out.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7fff, true); }
   return new Blob([out], { type: "audio/wav" });
 }
-
+async function wavTo16k(blob) {
+  const mono = await decode16k(blob);
+  return floatsToWav(mono, 16000);
+}
+async function postCheck(mySid, fd, tries = 3) {
+  let r = null, j = null;
+  for (let t = 1; t <= tries; t++) {
+    try {
+      r = await fetch("/session/" + mySid + "/check", { method: "POST", body: fd });
+      j = await r.json();
+    } catch (e) { r = null; j = { detail: String(e) }; }
+    if (r && r.ok) return { r, j };
+    const msg = String((j && j.detail) || "");
+    const transient = !r || r.status >= 500 || /upload|in time|faster connection|timed? ?out|connection/i.test(msg);
+    if (!transient || t === tries) return { r, j };
+    logS("Network problem sending the clip. Retry " + t + " of " + (tries - 1) + "...");
+    await new Promise(res => setTimeout(res, 2000));
+  }
+}
 async function buildSpliced() {
   const rf = tlRealRec || $("tlReal").files[0], ff = $("tlFake").files[0];
   if (!rf || !ff) return alert("Choose a real clip (r.wav) and a fake clip (fake.wav) first.");
@@ -535,7 +690,6 @@ async function buildSpliced() {
       splicedMeta.fakeStart.toFixed(1) + " s to " + splicedMeta.fakeEnd.toFixed(1) + " s. Now click Analyze timeline.";
   } catch (e) { $("tlStatus").textContent = "Could not build: " + e.message; }
 }
-
 async function analyzeTimeline() {
   const uploaded = tlCallRec || $("tlFile").files[0];
   const file = uploaded || splicedFile;
@@ -553,19 +707,16 @@ async function analyzeTimeline() {
     renderTimeline(j, truth);
   } catch (e) { $("tlStatus").textContent = "Error: " + e; }
 }
-
 function renderTimeline(j, truth) {
   const res = j.result || j;
   const segs = res.segments || [];
   const thr = res.threshold ?? 0.62;
   const out = $("tlOut");
   out.textContent = "";
-
   const head = document.createElement("div");
   head.style.margin = "10px 0 6px";
   head.textContent = "Whole clip: score " + Number(res.score).toFixed(4) + " (threshold " + thr + "), verdict: " + res.verdict;
   out.appendChild(head);
-
   if (!segs.length) {
     const p = document.createElement("div");
     p.className = "muted";
@@ -574,7 +725,6 @@ function renderTimeline(j, truth) {
   } else {
     const dur = Number(res.duration) || Math.max(...segs.map(s => s.end));
     const STEP = 0.5, cells = Math.ceil(dur / STEP);
-
     const bar = document.createElement("div");
     bar.style.cssText = "display:flex;height:34px;border-radius:6px;overflow:hidden;margin:6px 0 2px";
     for (let i = 0; i < cells; i++) {
@@ -587,7 +737,6 @@ function renderTimeline(j, truth) {
       bar.appendChild(c);
     }
     out.appendChild(bar);
-
     if (truth) {
       const t = document.createElement("div");
       t.style.cssText = "position:relative;height:14px;background:#e2e8f0;border-radius:4px;margin-bottom:2px";
@@ -600,11 +749,9 @@ function renderTimeline(j, truth) {
       tc.textContent = "Grey block = where the fake audio was actually inserted (we know because we built the clip).";
       out.appendChild(tc);
     }
-
     const legend = document.createElement("div");
-    legend.innerHTML = "<small><span style='color:#16a34a'>&#9632;</span> looks real &nbsp; <span style='color:#dc2626'>&#9632;</span> flagged synthetic &nbsp; 0 to " + dur.toFixed(0) + " s. Windows are 4 s and overlap, so edges are blurry.</small>";
+    legend.innerHTML = "<small><span style='color:#16a34a'>&#9632;</span> looks real   <span style='color:#dc2626'>&#9632;</span> flagged synthetic   0 to " + dur.toFixed(0) + " s. Windows are 4 s and overlap, so edges are blurry.</small>";
     out.appendChild(legend);
-
     const t = document.createElement("table");
     t.style.marginTop = "8px";
     const hr = t.insertRow();
@@ -615,7 +762,6 @@ function renderTimeline(j, truth) {
     });
     out.appendChild(t);
   }
-
   const d = document.createElement("details");
   d.style.marginTop = "8px";
   const sm = document.createElement("summary"); sm.textContent = "Raw response";
@@ -624,31 +770,23 @@ function renderTimeline(j, truth) {
   d.append(sm, pre);
   out.appendChild(d);
 }
+
 /* ---------- timeline microphone recording ---------- */
 let tlRealRec = null, tlCallRec = null, tlMr = null, tlTimer = null;
 let tlBtnId = null, tlLabel = null;
 const TL_MIN_SEC = 6, TL_MAX_SEC = 30;
-
 function tlUiStopped() {
   if (tlTimer) { clearInterval(tlTimer); tlTimer = null; }
   if (tlBtnId) { $(tlBtnId).textContent = tlLabel; $(tlBtnId).disabled = false; }
   $("tlStopBtn").style.display = "none";
   tlBtnId = null;
 }
-
-function stopTl() {
-  if (tlMr && tlMr.state === "recording") tlMr.stop();
-}
-
+function stopTl() { if (tlMr && tlMr.state === "recording") tlMr.stop(); }
 async function recordTl(kind, btnId) {
   if (tlMr && tlMr.state === "recording") return;
   let stream;
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (e) {
-    alert("Microphone not available: " + e.message);
-    return;
-  }
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { alert("Microphone not available: " + e.message); return; }
   const chunks = [];
   tlMr = new MediaRecorder(stream);
   tlBtnId = btnId;
@@ -666,18 +804,299 @@ async function recordTl(kind, btnId) {
     stream.getTracks().forEach(t => t.stop());
     const dur = secs;
     tlUiStopped();
-    if (dur < TL_MIN_SEC) {
-      alert("Recording too short (" + dur + " s). Record at least " + TL_MIN_SEC + " s.");
-      return;
-    }
+    if (dur < TL_MIN_SEC) { alert("Recording too short (" + dur + " s). Record at least " + TL_MIN_SEC + " s."); return; }
     const blob = new Blob(chunks, { type: tlMr.mimeType || "audio/webm" });
     const wav = await blobToWav(blob);
     const file = new File([wav], kind + ".wav", { type: "audio/wav" });
     if (kind === "real") tlRealRec = file; else tlCallRec = file;
-    const st = document.getElementById("tlStatus");
-    if (st) st.textContent = (kind === "real" ? "Recorded real voice" : "Recorded call") + " (" + dur + " s)";
+    $("tlStatus").textContent = (kind === "real" ? "Recorded real voice" : "Recorded call") + " (" + dur + " s)";
   };
   tlMr.start();
+}
+
+/* ---------- Call Guard ---------- */
+let cgRec = null, cgFinal = "", cgTimer = null, callOn = false;
+function cgUpdate(text) {
+  if (callOn && prevStatus !== "VERIFIED") return;   // during a live call, wait until the voice is verified
+  clearTimeout(cgTimer);
+  cgTimer = setTimeout(() => cgSend(text), 400);
+}
+async function cgSend(text) {
+  const t = text.trim();
+  if (!t) { $("cgRisk").textContent = "Type or speak something first."; return; }
+  const fd = new FormData();
+  fd.append("text", t);
+  fd.append("sid", sid || "");
+  fd.append("voice_score", lastScore === null ? "" : String(lastScore));
+  try {
+    const r = await fetch("/callguard", { method: "POST", body: fd });
+    const j = await r.json();
+    if (!r.ok) { $("cgRisk").textContent = "Error: " + JSON.stringify(j.detail || j); return; }
+    if (t.split(/\s+/).length >= 3) window.cgChecked = true;
+    window.cgLevel = j.level;
+    const colour = (j.level === "CRITICAL" || j.level === "HIGH") ? "#dc2626" : j.level === "MEDIUM" ? "#d97706" : "#16a34a";
+    $("cgRisk").innerHTML = "";
+    const lv = document.createElement("span");
+    lv.style.color = colour; lv.textContent = j.level + " ";
+    $("cgRisk").append(lv, document.createTextNode(j.message));
+    $("cgFlags").textContent = "Pressure heard: " + (j.heard.length ? j.heard.join(", ") : "none") +
+      (j.penalty ? ". Trust -" + j.penalty + " (" + j.new_signals.join(", ") + ")" : "") +
+      (j.voice_score === null ? ". No voice check yet." : ". Last voice score " + Number(j.voice_score).toFixed(3));
+    if (j.ml) $("cgFlags").textContent += ". ML second opinion (experimental): " + j.ml.label + " (" + j.ml.scam_score + ")";
+    $("cgTranscript").textContent = t;
+    if (j.penalty) logS("Trust -" + j.penalty + ": " + j.new_signals.join(", "));
+    await refresh();
+  } catch (e) {
+    $("cgRisk").textContent = "Backend not reachable: " + e;
+  }
+}
+function cgStart() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { $("cgRisk").textContent = "This browser has no speech recognition. Use Chrome or Edge (not Brave or Firefox)."; return; }
+  cgStop();
+  cgFinal = "";
+  cgRec = new SR();
+  cgRec.continuous = true;
+  cgRec.interimResults = true;
+  cgRec.lang = "en-US";
+  cgRec.keepGoing = true;
+  const st = m => { $("cgFlags").textContent = "Status: " + m; };
+  cgRec.onstart = () => st("recognition started");
+  cgRec.onaudiostart = () => st("microphone audio is flowing");
+  cgRec.onsoundstart = () => st("sound detected");
+  cgRec.onspeechstart = () => st("speech detected, waiting for text...");
+  cgRec.onnomatch = () => st("heard speech but could not turn it into words");
+  cgRec.onresult = e => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) cgFinal += e.results[i][0].transcript + " ";
+      else interim += e.results[i][0].transcript;
+    }
+    $("cgTranscript").textContent = cgFinal + interim;
+    cgUpdate(cgFinal + interim);
+  };
+  cgRec.onerror = e => {
+    st("ERROR: " + e.error);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") cgRec.keepGoing = false;
+  };
+  cgRec.onend = () => { if (cgRec && cgRec.keepGoing) { try { cgRec.start(); } catch (err) {} } };
+  try { cgRec.start(); } catch (err) { st("could not start: " + err.message); }
+}
+function cgStop() {
+  if (cgRec) { cgRec.keepGoing = false; cgRec.stop(); cgRec = null; }
+  $("cgRisk").textContent = "Stopped.";
+}
+async function enrollMic() {
+  const id = $("spk").value.trim();
+  if (!id) return alert("Type a Speaker ID first. Use a NEW id, e.g. teamate3.");
+  if (!confirm("Enroll your voice as '" + id + "'? Talk continuously for 25 s after you click OK.")) return;
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { return logS("Microphone not available: " + e.message); }
+  logS("ENROLLING '" + id + "': talk continuously for 25 s (read a paragraph aloud)...");
+  cgStart();
+  const wav = await recordChunk(stream, 25000);
+  if (cgRec) { cgRec.keepGoing = false; cgRec.stop(); cgRec = null; }
+  stream.getTracks().forEach(t => t.stop());
+  const small = await wavTo16k(wav);
+  const lvl = await speechLevel(small);
+  logS("Enrollment audio: " + Math.round(lvl.active * 100) + "% active, " + Math.round(small.size / 1024) + " KB");
+  if (!lvl.speech) return logS("Not enough speech. Nothing was enrolled. Try again.");
+  const fd = new FormData();
+  fd.append("speaker_id", id);
+  fd.append("file", new File([small], id + ".wav", { type: "audio/wav" }));
+  const r = await fetch("/enroll", { method: "POST", body: fd });
+  const j = await r.json().catch(() => ({}));
+  logS(r.ok ? "Enrolled '" + id + "'. Now start a session with this id and run the live call."
+            : "Enroll failed: " + JSON.stringify(j.detail || j));
+}
+
+/* ---------- LIVE CALL ---------- */
+async function liveCall() {
+  if (!sid) return alert("Start a session first (step 1).");
+  if (callOn || liveOn) return;
+  window.retried = false;
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { return logS("Microphone not available: " + e.message); }
+  const mySid = sid;
+  const FIRST_SECS = 15, SECS = 6, MAX_CHECKS = 6, MAX_SILENT = 3;
+  callOn = true; stopFlag = false; $("slog").textContent = "";
+  cgFinal = ""; $("cgTranscript").textContent = "";
+  setButtons(true); setLive(true);
+  logS("LIVE CALL started. Talk continuously for " + FIRST_SECS + " s to verify. Silent chunks are skipped and cost nothing.");
+  cgStart();
+  let checks = 0, silentRun = 0, verified = false;
+  while (checks < MAX_CHECKS && !stopFlag && mySid === sid) {
+    const recheck = verified && checks === 3;            // 4th check: re-verify identity (speaker takeover)
+    const secs = !verified ? FIRST_SECS : recheck ? 10 : SECS;
+    if (recheck) logS("Identity re-check: keep talking for 10 s (checks the same person is still speaking).");
+    else logS(verified ? "Listening..." : "Listening (waiting for your voice to verify)...");
+    const wordsBefore = wordCount($("cgTranscript").textContent);
+    const wav = await recordChunk(stream, secs * 1000);
+    if (stopFlag || mySid !== sid) break;
+    const lvl = await speechLevel(wav);
+    const newWords = wordCount($("cgTranscript").textContent) - wordsBefore;
+    logS("Audio: " + Math.round(lvl.active * 100) + "% active, peak " + lvl.peak.toFixed(2) + ", new words " + newWords);
+    const heard = lvl.speech && lvl.active * secs >= 2.5 && (verified || newWords >= 3);
+    if (!heard) {
+      silentRun++;
+      logS("No speech detected. Chunk skipped, no credits used. (" + silentRun + "/" + MAX_SILENT + ")");
+      if (silentRun >= MAX_SILENT) { logS("No speech for " + MAX_SILENT + " chunks. Call ended."); break; }
+      continue;
+    }
+    silentRun = 0;
+    const small = await wavTo16k(wav);
+    const fd = new FormData();
+    fd.append("mode", (!verified || recheck) ? "full" : "monitor");
+    fd.append("action", "transfer_money");
+    fd.append("file", new File([small], "call" + (checks + 1) + ".wav", { type: "audio/wav" }));
+    logS("Checking voice (" + Math.round(small.size / 1024) + " KB)...");
+    const { r, j } = await postCheck(mySid, fd);
+    if (!r) { logS("Server not reachable: " + j.detail + " (call stopped)"); break; }
+    if (!r.ok) {
+      if (/at least \d+ seconds|No speech detected|too short/i.test(String(j.detail))) {
+        silentRun++;
+        logS("Not enough speech in this chunk, skipped. (" + silentRun + "/" + MAX_SILENT + ")");
+        if (silentRun >= MAX_SILENT) { logS("Not enough speech for " + MAX_SILENT + " chunks. Call ended."); break; }
+        continue;
+      }
+      logS("Refused: " + (typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)) + " (call stopped)");
+      if (/credits/i.test(String(j.detail))) logS("OUT OF DETECTIF CREDITS. Ask the organizers for a top-up.");
+      if (/upload|faster connection/i.test(String(j.detail))) logS("Your connection to DetectifAI is too slow. Try a phone hotspot.");
+      await refresh();
+      break;
+    }
+    checks++;
+    lastScore = j.aletheia_score;
+    logS("Check " + checks + " -> " + j.status + ", trust " + j.trust + ", AI score " + j.aletheia_score);
+    if (j.eidos) logS("Eidos similarity " + j.eidos.similarity + " (needs " + j.eidos.threshold + ")");
+    await refresh();
+    if (j.status === "SUSPENDED") { logS("Session suspended: " + j.reason); break; }
+    if (j.status !== "VERIFIED") {
+      if (!window.retried) { window.retried = true; logS("Voice did not match. One more try: keep talking."); continue; }
+      logS("Not verified. Call stopped."); break;
+    }
+    verified = true;
+    if (cgFinal.trim()) await cgSend(cgFinal);
+  }
+  stream.getTracks().forEach(t => t.stop());
+  if (cgRec) { cgRec.keepGoing = false; cgRec.stop(); cgRec = null; }
+  callOn = false; setLive(false);
+  if (prevStatus !== "SUSPENDED") setButtons(false);
+  logS("Live call ended.");
+}
+
+/* ---------- transaction approval + voice challenge ---------- */
+let txnId = null, chId = null;
+const det = j => (typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail || j));
+function hideTxn() { txnId = null; chId = null; $("txnBox").style.display = "none"; $("apBtn").style.display = "none"; }
+function showChallenge(ch) {
+  chId = ch.challenge_id;
+  $("chPhrase").textContent = ch.phrase;
+  $("chBox").style.display = "block";
+  $("chStatus").textContent = "Click Speak, then say the sentence within " + ch.expires_in + " s.";
+  $("chBtn").disabled = false;
+}
+async function prepareTransfer() {
+  if (!sid) return say("Start a session first.", false);
+  const fd = new FormData();
+  fd.append("sid", sid); fd.append("amount", $("amt").value); fd.append("recipient", $("rcp").value);
+  let r, j;
+  try { r = await fetch("/txn/prepare", { method: "POST", body: fd }); j = await r.json(); }
+  catch (e) { return say("Server not reachable: " + e, false); }
+  if (!r.ok) { hideTxn(); say("BLOCKED (" + r.status + "): " + det(j), false); return refresh(); }
+  txnId = j.txn.id;
+  $("apBtn").style.display = j.txn.needs_approval ? "inline-block" : "none";
+  $("txnBox").style.display = "block";
+  $("txnTitle").textContent = "Pending: " + j.txn.amount + " to " + j.txn.recipient +
+    " (approval expires in " + j.txn.expires_in + " s, works once)";
+  if (j.challenge) {
+    showChallenge(j.challenge);
+    $("cfBtn").disabled = true;
+    say("Trust is below 90. Say the sentence to continue.");
+  } else {
+    $("chBox").style.display = "none";
+    $("cfBtn").disabled = false;
+    say("Trust is high enough, so no challenge is needed. Confirm to send.", true);
+  }
+  await refresh();
+}
+async function newSentence() {
+  if (!sid || !txnId) return;
+  const fd = new FormData(); fd.append("sid", sid); fd.append("txn_id", txnId);
+  const r = await fetch("/txn/challenge", { method: "POST", body: fd });
+  const j = await r.json();
+  if (r.ok) showChallenge(j); else $("chStatus").textContent = det(j);
+}
+function listenOnce(ms) {
+  return new Promise(resolve => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return resolve("");
+    let text = "";
+    const rec = new SR();
+    rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = e => { text = ""; for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript + " "; };
+    rec.onend = () => resolve(text.trim());
+    rec.onerror = () => {};
+    try { rec.start(); } catch (e) { return resolve(""); }
+    setTimeout(() => { try { rec.stop(); } catch (e) {} }, ms);
+  });
+}
+async function speakChallenge() {
+  if (!sid || !txnId || !chId) return;
+  const st = $("chStatus");
+  if (callOn) { st.textContent = "Stop the live call first."; return; }
+  if (cgRec) cgStop();
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { st.textContent = "Microphone not available: " + e.message; return; }
+  $("chBtn").disabled = true;
+  st.textContent = "Listening for 8 s. Say the sentence now...";
+  const [wav, spoken] = await Promise.all([recordChunk(stream, 8000), listenOnce(8000)]);
+  stream.getTracks().forEach(t => t.stop());
+  const small = await wavTo16k(wav);
+  const lvl = await speechLevel(small);
+  if (!lvl.speech) { st.textContent = "No speech detected. Nothing was sent. Try again."; $("chBtn").disabled = false; return; }
+  if (!spoken) { st.textContent = "Speech-to-text heard nothing (use Chrome or Edge). Nothing was sent."; $("chBtn").disabled = false; return; }
+  st.textContent = 'Heard: "' + spoken + '". Checking your voice...';
+  const fd = new FormData();
+  fd.append("mode", "full"); fd.append("action", "transfer_money");
+  fd.append("challenge_id", chId); fd.append("spoken", spoken);
+  fd.append("file", new File([small], "challenge.wav", { type: "audio/wav" }));
+  const { r, j } = await postCheck(sid, fd);
+  if (!r) { st.textContent = "Server not reachable: " + j.detail; $("chBtn").disabled = false; return; }
+  if (!r.ok) { st.textContent = "Refused: " + det(j); $("chBtn").disabled = false; await refresh(); return; }
+  lastScore = j.aletheia_score;
+  const c = j.challenge;
+  if (j.status === "SUSPENDED") {
+    st.textContent = "Voice check failed: " + j.reason;
+    $("cfBtn").disabled = true;
+  } else if (c && c.passed) {
+    st.textContent = "Sentence and voice both passed" +
+      (c.phrase_match !== undefined ? " (words matched " + Math.round(c.phrase_match * 100) + "%)" : "") + ". You can confirm.";
+    $("cfBtn").disabled = false;
+    say("Challenge passed. Confirm the transfer.", true);
+  } else {
+    st.textContent = (c ? c.reason : "Challenge not passed.") + " Heard: \"" + spoken + "\".";
+    $("chBtn").disabled = false;
+  }
+  await refresh();
+}
+async function adminApprove() {
+  const fd = new FormData(); fd.append("sid", sid); fd.append("txn_id", txnId); fd.append("approver_role", "admin");
+  const r = await fetch("/txn/approve", { method: "POST", body: fd });
+  const j = await r.json();
+  say(r.ok ? "Bank admin approved. Now confirm." : "Not approved: " + det(j), r.ok);
+}
+async function confirmTransfer() {
+  if (!sid || !txnId) return;
+  const fd = new FormData(); fd.append("sid", sid); fd.append("txn_id", txnId);
+  const r = await fetch("/txn/confirm", { method: "POST", body: fd });
+  const j = await r.json();
+  if (r.ok) { say("ALLOWED: " + j.status + " (" + j.amount + " to " + j.recipient + ")", true); hideTxn(); }
+  else say("BLOCKED (" + r.status + "): " + det(j), false);
+  await refresh();
 }
 </script>
 </body>

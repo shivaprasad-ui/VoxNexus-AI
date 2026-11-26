@@ -16,9 +16,12 @@ A cloned voice can match the right person and still be fake. Identity alone is n
 ## Run
 1. `cd backend`, create a venv, `pip install -r requirements.txt`
 2. Create `backend/.env` with `DETECTIF_API_KEY=your_key`
-3. `uvicorn main:app --port 8001`
-4. Open http://127.0.0.1:8001/docs
-5. Monitoring script: `python sentinel.py <session_id> a.wav b.wav`
+3. Run `python seed_users.py`; it prompts for passwords for the local demo accounts. Do not reuse real banking passwords.
+4. If `cust1` and `cust2` already have consented voice profiles enrolled in DetectifAI, run `python mark_enrolled.py cust1 cust2`. Otherwise sign in and submit an enrollment for admin review.
+5. Run the no-credits checks: `python test_auth.py` and `python test_portal.py`
+6. Start the server with `uvicorn main:app --port 8001`, then open http://127.0.0.1:8001/login
+
+The customer and admin portal pages are available after login. API documentation is at http://127.0.0.1:8001/docs.
 
 ## Results (small test, not an accuracy claim)
 | Clip | Aletheia score (threshold 0.62) | Outcome |
@@ -30,12 +33,14 @@ The Eidos match was tested only with the same recording used for enrollment, so 
 
 ## Limitations
 - Tested on a few clips. The fake was old text-to-speech, not a modern voice clone.
-- Monitor mode only detects synthetic voices. It would not catch a different real person taking over the line.
-- Sessions are held in memory and lost on restart. The audit log is a local file.
+- The 4th live-call check re-verifies identity, but it has not been tested with a real different speaker taking over the call.
+- Active sessions remain in memory and cannot resume after a server restart, although session and security-event records are mirrored to SQLite.
+- Large transfers are blocked pending a separate admin-approval page; the current portal does not provide authenticated transaction approval.
+- Call transcripts and challenge speech recognition still come from the browser. The ML Call Guard score is experimental.
 - A score is evidence, not proof. A blocked session should lead to calling back on a trusted number.
 
-## Roadmap (not built)
-Random-phrase voice challenge, live audio streaming, a database, an agent interface.
+## Next steps
+Authenticated transaction approval with an atomic balance ledger, server-side transcription, service-failure handling, and rate limiting.
 
 ## Ethics
 Only voices of consenting team members were used. No real person was cloned.

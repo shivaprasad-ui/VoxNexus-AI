@@ -28,9 +28,13 @@ def update(s, fake, match, identity_checked):
     if fake is True:
         _suspend(s, "Voice flagged as AI-generated")
     elif identity_checked and match is False:
-        _suspend(s, "Speaker does not match the registered person")
+        s["identity_fails"] = s.get("identity_fails", 0) + 1
+        if s["identity_fails"] >= 2 or s["status"] == "VERIFIED":
+            _suspend(s, "Speaker does not match the registered person")
+        else:
+            log(s, "IDENTITY_RETRY", "Voice did not match. One more attempt allowed.")
     elif identity_checked and fake is False and match is True:
-        s["trust_score"] = 100
+        s["trust_score"] = min(100, s.get("pressure_cap",100))
         s["status"] = "VERIFIED"
         s["verification_count"] += 1
         s["last_identity_check"] = time.time()
@@ -48,6 +52,8 @@ def authorize(s, action):
         return "BLOCK", "Session suspended. Contact the person on a trusted number."
     need = REQUIRED.get(action, 90)     # unknown actions count as sensitive
     score = effective_score(s)
-    if score >= need:
+    if action not in REQUIRED:
+        return "BLOCK", "Unknown action"
+    if s["status"] == "VERIFIED" and score >= need:
         return "ALLOW", f"Trust {score} meets the {need} needed for {action}."
     return "STEP_UP", f"Trust {score} is below the {need} needed for {action}. Run a full identity check."

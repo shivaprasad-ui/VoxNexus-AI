@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoxNexus AI - Sign in</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1220;
+       font-family:system-ui,Segoe UI,Arial,sans-serif;color:#e8edf7}
+  .card{width:min(400px,92vw);background:#121a2e;border:1px solid #243153;border-radius:14px;padding:28px}
+  h1{margin:0 0 4px;font-size:22px} .sub{color:#8fa0c4;font-size:13px;margin-bottom:20px}
+  label{display:block;font-size:12px;color:#8fa0c4;margin:14px 0 6px}
+  input{width:100%;padding:11px 12px;border-radius:8px;border:1px solid #2c3b63;background:#0d1426;color:#fff;font-size:15px}
+  input:focus{outline:2px solid #3b6cff;border-color:#3b6cff}
+  button{width:100%;margin-top:20px;padding:12px;border:0;border-radius:8px;background:#3b6cff;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6;cursor:wait}
+  #err{display:none;margin-top:14px;padding:10px 12px;border-radius:8px;background:#3a1820;border:1px solid #7a2a3a;color:#ffb3c0;font-size:13px}
+  #ok{display:none;margin-top:14px;padding:10px 12px;border-radius:8px;background:#12301f;border:1px solid #1f6b3a;color:#a8f0c2;font-size:13px}
+  #ok a{color:#fff}
+  .note{margin-top:18px;font-size:11px;color:#6f80a6;line-height:1.5}
+</style>
+</head>
+<body>
+<form class="card" id="f" autocomplete="on">
+  <h1>VoxNexus AI</h1>
+  <div class="sub">Sign in with your customer ID or username</div>
+  <label for="u">Username or customer ID</label>
+  <input id="u" name="username" autocomplete="username" required maxlength="64">
+  <label for="p">Password</label>
+  <input id="p" name="password" type="password" autocomplete="current-password" required>
+  <button id="b" type="submit">Sign in</button>
+  <div id="err" role="alert"></div>
+  <div id="ok"></div>
+  <div class="note">Prototype with fictional demo accounts. No real banking data. Your role is set by the bank system, not chosen here.</div>
+</form>
+<script>
+const f = document.getElementById('f'), err = document.getElementById('err'),
+      ok = document.getElementById('ok'), b = document.getElementById('b');
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  err.style.display = ok.style.display = 'none';
+  b.disabled = true;
+  try {
+    const r = await fetch('/auth/login', { method: 'POST', body: new FormData(f) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { err.textContent = j.detail || 'Sign-in failed.'; err.style.display = 'block'; return; }
+    ok.innerHTML = 'Signed in as ' + j.name + ' (' + j.role + '). <a href="' + j.redirect + '">Continue</a>';
+    ok.style.display = 'block';
+    window.location.href = j.redirect;
+  } catch (x) {
+    err.textContent = 'Cannot reach the server.'; err.style.display = 'block';
+  } finally { b.disabled = false; }
+});
+</script>
+</body>
+</html>

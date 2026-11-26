@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoxNexus Admin</title>
+<style>
+ body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:#eef2f9;color:#0f172a}
+ nav{background:#0b1f4d;color:#fff;display:flex;align-items:center;gap:16px;padding:12px 28px}
+ .logo{font-weight:800;font-size:20px;margin-right:auto} .logo span{color:#60a5fa}
+ main{max-width:1000px;margin:0 auto;padding:24px 16px}
+ .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+ table{width:100%;border-collapse:collapse;font-size:14px} th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e2e8f0;vertical-align:middle}
+ th{color:#64748b;font-weight:600}
+ button{padding:8px 14px;border:0;border-radius:8px;color:#fff;font-weight:600;cursor:pointer;margin-right:6px}
+ .g{background:#16a34a}.r{background:#dc2626}.b{background:#475569}
+ #msg{margin:12px 0;font-weight:600}
+</style></head>
+<body>
+<nav><div class="logo">Vox<span>Nexus</span> Admin</div><span id="who"></span><button class="b" onclick="logout()">Log out</button></nav>
+<main>
+ <h2>Voice enrollment requests</h2>
+ <p>Listen to the sample and confirm it is the customer's own voice. Approving sends it to Eidos (about 200 credits).</p>
+ <div id="msg"></div>
+ <div class="card"><table id="t"></table></div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+async function call(path, opts) {
+  const r = await fetch(path, opts);
+  if (r.status === 401) { location.href = "/login"; throw new Error("signed out"); }
+  return r;
+}
+async function load() {
+  const me = await (await call("/auth/me?portal=admin")).json();
+  $("who").textContent = me.name + " (" + me.id + ")";
+  const rows = await (await call("/api/admin/enrollments?status=PENDING")).json();
+  const t = $("t"); t.textContent = "";
+  const h = t.insertRow();
+  ["Customer", "Speaker id", "Submitted", "Sample", "Decision"].forEach(x => { const c = document.createElement("th"); c.textContent = x; h.appendChild(c); });
+  if (!rows.length) { const r = t.insertRow(); const c = r.insertCell(); c.colSpan = 5; c.textContent = "No pending requests."; return; }
+  rows.forEach(e => {
+    const r = t.insertRow();
+    r.insertCell().textContent = e.full_name + " (" + e.customer_id + ")";
+    r.insertCell().textContent = e.speaker_id;
+    r.insertCell().textContent = new Date(e.created_at * 1000).toLocaleString();
+    const a = document.createElement("audio"); a.controls = true; a.src = "/api/admin/enrollments/" + e.id + "/audio";
+    r.insertCell().appendChild(a);
+    const d = r.insertCell();
+    const ok = document.createElement("button"); ok.className = "g"; ok.textContent = "Approve"; ok.onclick = () => decide(e.id, "APPROVED");
+    const no = document.createElement("button"); no.className = "r"; no.textContent = "Reject"; no.onclick = () => decide(e.id, "REJECTED");
+    d.append(ok, no);
+  });
+}
+async function decide(id, decision) {
+  let reason = "voice sample reviewed";
+  if (decision === "REJECTED") { reason = prompt("Reason for rejecting:"); if (!reason) return; }
+  else if (!confirm("Approve and enroll this voice in Eidos?")) return;
+  $("msg").textContent = "Working...";
+  const fd = new FormData(); fd.append("decision", decision); fd.append("reason", reason);
+  const r = await call("/api/admin/enrollments/" + id + "/decide", { method: "POST", body: fd });
+  const j = await r.json();
+  $("msg").textContent = r.ok ? "Done: " + j.status : "Failed: " + (j.detail || r.status);
+  load();
+}
+async function logout() {
+  await fetch("/auth/logout", { method: "POST", body: new URLSearchParams({ portal: "admin" }) });
+  location.href = "/login";
+}
+load();
+</script></body></html>
